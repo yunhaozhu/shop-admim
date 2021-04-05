@@ -4,16 +4,16 @@
       <div class="avatar-box">
         <img src="../assets/logo.png" alt=""/>
       </div>
-      <el-form label-width="0px" class="login_form">
-        <el-form-item>
-          <el-input prefix-icon="el-icon-user"></el-input>
+      <el-form  ref="loginFormRef" label-width="0px" class="login_form" :model="loginForm" :rules="loginFormRules">
+        <el-form-item prop="username">
+          <el-input v-model="loginForm.username" prefix-icon="el-icon-user"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input prefix-icon="el-icon-lock"></el-input>
+        <el-form-item prop="password">
+          <el-input v-model="loginForm.password" prefix-icon="el-icon-lock" type="password"></el-input>
         </el-form-item>
         <el-form-item class="btn">
-          <el-button type="primary">登陆</el-button>
-          <el-button type="info">重置</el-button>
+          <el-button type="primary" @click="login">登陆</el-button>
+          <el-button type="info" @click="resetLoginForm">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -22,7 +22,41 @@
 
 <script>
 export default {
-  name: 'login'
+  name: 'login',
+  data () {
+    return {
+      loginForm: {
+        username: '',
+        password: ''
+      },
+      loginFormRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 20, message: '长度应为3～20字', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 20, message: '长度应为6～20位', trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  methods: {
+    resetLoginForm() {
+      this.$refs.loginFormRef.resetFields()
+    },
+    login () {
+      this.$refs.loginFormRef.validate(async (valid) => {
+        if (!valid) return this.$message.error('登陆失败')
+        const { data: result } = await this.$http.post('login', this.loginForm)
+        console.log(result)
+        if (result.meta.status !== 200) return this.$message.error('用户名或密码错误')
+        this.$message.success('登陆成功！')
+        window.sessionStorage.setItem('token', result.data.token)
+        await this.$router.push('/home')
+      })
+    }
+  }
 }
 </script>
 
