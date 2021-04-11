@@ -9,18 +9,21 @@
       <el-container>
         <el-aside :width="isCollapse?'64px':'230px'">
           <el-menu
+            :default-active="activePath"
             :collapse="isCollapse"
             unique-opened router
-            background-color="#f5f8fa"
+            background-color="#ffffff"
             text-color="#33475b"
-            active-text-color="#019eae"
+            active-text-color="#409efd"
             :collapse-transition="false">
             <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
               <template slot="title">
                 <i :class="iconsObj[item.id]"></i>
                 <span>{{item.authName}}</span>
               </template>
-              <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children" :key="subItem.id">
+              <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children"
+                            @click="saveNavState('/' + subItem.path)"
+                            :key="subItem.id">
                 <template slot="title">
                   <i class="el-icon-menu"></i>
                   <span>{{subItem.authName}}</span>
@@ -43,6 +46,7 @@ export default {
   data() {
     return {
       menuList: [],
+      activePath: '',
       iconsObj: {
         125: 'el-icon-user-solid',
         103: 'el-icon-s-tools',
@@ -54,6 +58,7 @@ export default {
     }
   },
   created () {
+    this.activePath = window.sessionStorage.getItem('activePath')
     this.getMenuList()
   },
   methods: {
@@ -68,6 +73,9 @@ export default {
       const { data: res } = await this.$http.get('menus')
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menuList = res.data
+    },
+    saveNavState(activePath) {
+      window.sessionStorage.setItem('activePath', activePath)
     }
   }
 }
@@ -93,14 +101,14 @@ export default {
     }
   }
   .el-aside{
-    background-color: #f5f8fa;
+    background-color: #ffffff;
   }
   .el-main{
-    background-color: #ffffff;
+    background-color: #f5f8fa;
     //#ff7a59 #eaf0f6 #e5f5f8
   }
   .toggle-button {
-    background-color: #f5f8fa;
+    background-color: #ffffff;
     line-height: 24px;
     font-size: 10px;
     color: #33475b;

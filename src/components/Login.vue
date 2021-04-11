@@ -69,6 +69,7 @@ export default {
     width: 500px;
     height: 350px;
     background-color: #fff;
+    box-shadow:  rgba(45, 62, 80, 0.12) 0px 1px 5px 0px;
     border-radius: 5px;
     position: absolute;
     left: 50%;
@@ -80,7 +81,7 @@ export default {
       border: 1px solid #eee;
       border-radius: 50%;
       padding: 10px;
-      box-shadow: 0 0 5px #ddd;
+      box-shadow:  rgba(45, 62, 80, 0.12) 0px 1px 5px 0px;
       position: absolute;
       left: 50%;
       transform: translate(-50%, -50%);
